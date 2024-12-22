@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SOCI 53015 Assignment Topics</title>
+	<script>
+		// Topics list (in Sinhala)
+		const topics = [
+			"මාතෘකාව 1", "මාතෘකාව 2", "මාතෘකාව 3",
+			// ...
+			"මාතෘකාව 100"
+		];
+
+		// Function to handle topic selection
+		function displayTopic() {
+			const choice = parseInt(document.getElementById("topicNumber").value); // Get the user's topic number
+			const result = document.getElementById("result");
+			let selectedNumbers = JSON.parse(sessionStorage.getItem("selectedNumbers")) || [];
+			let takenTopics = JSON.parse(sessionStorage.getItem("takenTopics")) || []; // Get taken topics from sessionStorage
+
+			if (choice >= 1 && choice <= 100) {
+				// Check if the topic is already taken
+				if (takenTopics.includes(choice)) {
+					result.textContent = `අංක ${choice} දැනටමත් තෝරාගෙන ඇත. කරුණාකර වෙනත් අංකයක් තෝරන්න.`;
+					result.style.color = "red";
+				} else {
+					// Mark the topic as taken
+					takenTopics.push(choice);
+					sessionStorage.setItem("takenTopics", JSON.stringify(takenTopics)); // Save the taken topics
+
+					// Add the topic to the selected numbers list
+					selectedNumbers.push(choice);
+					sessionStorage.setItem("selectedNumbers", JSON.stringify(selectedNumbers)); // Save selected numbers
+
+					result.textContent = `ඔබ තෝරාගත්ත මාතෘකාව: ${topics[choice - 1]}`;
+					result.style.color = "blue";
+					document.getElementById("topicNumber").value = ''; // Clear the input box
+				}
+			} else {
+				result.textContent = "කරුණාකර 1 සහ 100 අතර අංකයක් ඇතුළත් කරන්න.";
+				result.style.color = "red";
+			}
+		}
+
+		// Function to show selected topics
+		function showSelectedTopics() {
+			const result = document.getElementById("result");
+			let selectedNumbers = JSON.parse(sessionStorage.getItem("selectedNumbers")) || [];
+			const selectedList = document.getElementById("selectedTopics");
+			selectedList.innerHTML = ""; // Clear previous list
+
+			if (selectedNumbers.length > 0) {
+				selectedNumbers.forEach((num) => {
+					const listItem = document.createElement("li");
+					listItem.textContent = `අංක ${num}: ${topics[num - 1]}`;
+					selectedList.appendChild(listItem);
+				});
+			} else {
+				result.textContent = "තෝරාගත් මාතෘකා කිසිවක් නැත.";
+				result.style.color = "black";
+			}
+		}
+	</script>
+</head>
+<body>
+	<h1>මාතෘකා තේරීම</h1>
+	<label for="topicNumber">මාතෘකා අංකය (1-100):</label>
+	<input type="number" id="topicNumber" min="1" max="100">
+	<button onclick="displayTopic()">තෝරන්න</button>
+	<button onclick="showSelectedTopics()">තෝරාගත් මාතෘකා පෙන්වන්න</button>
+	<p id="result" style="font-weight: bold;"></p>
+	<h2>තෝරාගත් මාතෘකා</h2>
+	<ul id="selectedTopics"></ul>
+</body>
+</html>
